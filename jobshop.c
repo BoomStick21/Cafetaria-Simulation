@@ -402,7 +402,7 @@ main ()				/* Main function. */
 
   /* Set maxatr = max(maximum number of attributes per record, 4) */
 
-  maxatr = 4;			/* NEVER SET maxatr TO BE SMALLER THAN 4. */
+  maxatr = 5;			/* NEVER SET maxatr TO BE SMALLER THAN 4. */
 
   /* Schedule the arrival of the first job. */
 
