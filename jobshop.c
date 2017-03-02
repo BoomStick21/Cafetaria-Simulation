@@ -220,13 +220,13 @@ report (void)			/* Report generator function. */
   /* Compute the average total delay in queue for each job type and the
      overall average job total delay. */
 
-  fprintf (outfile, "\n\n\n\nJob type     Average total delay in queue");
+  fprintf (outfile, "\n\n\n\nJob type     Average total delay in queue    Maximum total delay in queue");
   overall_avg_job_tot_delay = 0.0;
   sum_probs = 0.0;
   for (i = 1; i <= num_job_types; ++i)
     {
       avg_job_tot_delay = sampst (0.0, -(num_stations + i)) * num_tasks[i];
-      fprintf (outfile, "\n\n%4d%27.3f", i, avg_job_tot_delay);
+      fprintf (outfile, "\n\n%4d%27.3f  %27.3f", i, avg_job_tot_delay, transfer[3]);
       overall_avg_job_tot_delay += (prob_distrib_job_type[i] - sum_probs) * avg_job_tot_delay;
       sum_probs = prob_distrib_job_type[i];
     }
@@ -237,6 +237,9 @@ report (void)			/* Report generator function. */
 
   fprintf (outfile, "\n\n\n Work      Average number      Maximum number      Average       Average delay       Maximum delay");
   fprintf (outfile, "\nstation       in queue            in queue       utilization        in queue           in queue");
+  
+  float sum_avg_cust = 0;
+  float sum_max_cust = 0;
   for (j = 1; j <= num_stations; ++j)
   {
     sampst(0.0, -j);
@@ -255,8 +258,14 @@ report (void)			/* Report generator function. */
       max_queue = max_queue*2;
     }
 
+    sum_avg_cust += avg_queue;
+    sum_max_cust += max_queue;
+
     fprintf (outfile, "\n\n%4d%17.3f%21.3f%17.3f%17.3f%21.3f", j, avg_queue, max_queue, timest (0.0, -j) / num_machines[j], avg_delay, max_delay);
   }
+
+  fprintf(outfile, "\n\n\n\n Time-average total number of customers in the entire system = %5.3f", sum_avg_cust);
+  fprintf(outfile, "\n\n Maximum total number of customers in the entire system = %5.3f", sum_max_cust);
 }
 
 int

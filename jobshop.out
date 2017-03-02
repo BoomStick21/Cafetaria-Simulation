@@ -34,13 +34,13 @@ Job type     Service time (in seconds) for successive tasks
 
 
 
-Job type     Average total delay in queue
+Job type     Average total delay in queue    Maximum total delay in queue
 
-   1                   2094.853
+   1                   2094.853                     4029.709
 
-   2                    503.750
+   2                    503.750                      917.756
 
-   3                      1.080
+   3                      1.080                       16.241
 
 Overall average job total delay =  1751.499
 
@@ -56,3 +56,9 @@ station       in queue            in queue       utilization        in queue    
    3            0.000                0.000            0.000            0.000                0.000
 
    4            0.004                2.000            0.297            0.186               16.241
+
+
+
+ Time-average total number of customers in the entire system = 107.883
+
+ Maximum total number of customers in the entire system = 216.000
