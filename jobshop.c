@@ -10,9 +10,12 @@
 				   particular station. */
 #define EVENT_END_SIMULATION  3	/* Event type for end of the simulation. */
 #define STREAM_INTERARRIVAL   1	/* Random-number stream for interarrivals. */
-#define STREAM_JOB_TYPE       3	/* Random-number stream for job types. */
-#define STREAM_SERVICE        3	/* Random-number stream for service times. */
-#define STREAM_CUSTOMER       4 /* Random-number stream for customers. */
+#define STREAM_GROUP          2
+#define STREAM_ROUTE          3
+#define STREAM_ST_HOT         4
+#define STREAM_ST_SANDWICH    5
+#define STREAM_ST_DRINK       6
+#define STREAM_TOTAL_ACT      7
 #define MAX_NUM_STATIONS      4	/* Maximum number of stations. */
 #define MAX_NUM_JOB_TYPES     3	/* Maximum number of job types. */
 #define MAX_NUM_CUSTOMERS      4 /* Maximum number of customers in a group. */
@@ -54,9 +57,25 @@ int random_with_prob(double prob_distrib[], int stream ) {
   }
 }
 
+int get_stream_station(int i) {
+  switch (i) {
+    case 1:
+      return STREAM_ST_HOT;
+      break;
+    case 2:
+      return STREAM_ST_SANDWICH;
+      break;
+    case 3:
+      return STREAM_ST_DRINK;
+      break;
+    case 4:
+      return STREAM_TOTAL_ACT;
+      break;
+  }
+}
+
 void serve(int customer) {
   int station;
-  printf("bsd\n");
   /* Determine the station from the route matrix. */
 
   station = route[job_type[customer]][task[customer]];
@@ -81,7 +100,6 @@ void serve(int customer) {
 
   else
   {
-    printf("asd\n");
 
     /* A machine in this station is idle, so start service on the arriving
        job (which has a delay of zero). */
@@ -95,13 +113,9 @@ void serve(int customer) {
        first two for the event record before invoking event_schedule. */
 
     transfer[3] = job_type[customer];
-    printf("sdb\n");
     transfer[4] = task[customer];
-    printf("sda\n");
     transfer[5] = customer;
-    printf("sdn\n");
-    event_schedule (sim_time + uniform (min_service[job_type[customer]][task[customer]], max_service[job_type[customer]][task[customer]], STREAM_SERVICE), EVENT_DEPARTURE);
-    printf("sd\n");
+    event_schedule (sim_time + uniform (min_service[job_type[customer]][task[customer]], max_service[job_type[customer]][task[customer]], get_stream_station(station)), EVENT_DEPARTURE);
   }
 }
 
@@ -119,10 +133,10 @@ arrive (int new_job)    /* Function to serve as both an arrival event of a job
   if (new_job == 1)
   {
     event_schedule (sim_time + expon (mean_interarrival, STREAM_INTERARRIVAL), EVENT_ARRIVAL);
-    num_customers = random_with_prob(prob_distrib_customer, STREAM_CUSTOMER);
+    num_customers = random_integer(prob_distrib_customer, STREAM_GROUP);
     for (int i = 1; i <= num_customers; ++i)
     {
-      job_type[i] =  random_with_prob(prob_distrib_job_type, STREAM_JOB_TYPE); //random_integer (prob_distrib_job_type, STREAM_JOB_TYPE);        
+      job_type[i] =  random_integer(prob_distrib_job_type, STREAM_ROUTE);       
       task[i] = 1;
     }
   }
@@ -183,7 +197,7 @@ depart ()			/* Event function for departure of a job from a particular
       transfer[3] = job_type_queue;
       transfer[4] = task_queue;
       transfer[5] = customer;
-      event_schedule (sim_time + uniform (min_service[job_type[customer]][task[customer]], max_service[job_type[customer]][task[customer]], STREAM_SERVICE), EVENT_DEPARTURE);
+      event_schedule (sim_time + uniform (min_service[job_type[customer]][task[customer]], max_service[job_type[customer]][task[customer]], get_stream_station(station)), EVENT_DEPARTURE);
     }
 
   /* If the current departing job has one or more tasks yet to be done, send
@@ -221,10 +235,28 @@ report (void)			/* Report generator function. */
   /* Compute the average number in queue, the average utilization, and the
      average delay in queue for each station. */
 
-  fprintf (outfile, "\n\n\n Work      Average number      Average       Average delay");
-  fprintf (outfile, "\nstation       in queue       utilization        in queue");
+  fprintf (outfile, "\n\n\n Work      Average number      Maximum number      Average       Average delay       Maximum delay");
+  fprintf (outfile, "\nstation       in queue            in queue       utilization        in queue           in queue");
   for (j = 1; j <= num_stations; ++j)
-    fprintf (outfile, "\n\n%4d%17.3f%17.3f%17.3f", j, filest (j), timest (0.0, -j) / num_machines[j], sampst (0.0, -j));
+  {
+    sampst(0.0, -j);
+    float avg_delay = transfer[1];
+    float max_delay = transfer[3];
+
+    filest(j);
+    float avg_queue = transfer[1];
+    float max_queue = transfer[2];
+    if (max_queue < 0)
+    { 
+      max_queue = 0;
+    }
+    if (j == 4)
+    {
+      max_queue = max_queue*2;
+    }
+
+    fprintf (outfile, "\n\n%4d%17.3f%21.3f%17.3f%17.3f%21.3f", j, avg_queue, max_queue, timest (0.0, -j) / num_machines[j], avg_delay, max_delay);
+  }
 }
 
 int
@@ -330,8 +362,6 @@ main ()				/* Main function. */
 	{
 	case EVENT_ARRIVAL:
   {
-   //  int customers = random_with_prob(prob_distrib_customer, STREAM_CUSTOMER);
-  	// printf("%d\n", customers);
     arrive (1);
   	break;
   }
