@@ -271,10 +271,68 @@ report (void)			/* Report generator function. */
 int
 main ()				/* Main function. */
 {
-  /* Open input and output files. */
+  
+  int number;
+  scanf("%d", &number);
 
-  infile = fopen ("jobshop.in", "r");
-  outfile = fopen ("jobshop.out", "w");
+  /* Open input and output files. */
+  switch(number) {
+    case 0:
+    {
+      infile = fopen ("jobshop base-case.in", "r");
+      outfile = fopen ("jobshop base-case.out", "w");
+      break;
+    }
+    case 1:
+    {
+      infile = fopen ("jobshop case 1.in", "r");
+      outfile = fopen ("jobshop case 1.out", "w");
+      break;
+    }
+    case 2:
+    {
+      infile = fopen ("jobshop case 2.in", "r");
+      outfile = fopen ("jobshop case 2.out", "w");
+      break;
+    }
+    case 3:
+    {
+      infile = fopen ("jobshop case 3.in", "r");
+      outfile = fopen ("jobshop case 3.out", "w");
+      break;
+    }
+    case 4:
+    {
+      infile = fopen ("jobshop case 4.in", "r");
+      outfile = fopen ("jobshop case 4.out", "w");
+      break;
+    }
+    case 5:
+    {
+      infile = fopen ("jobshop case 5.in", "r");
+      outfile = fopen ("jobshop case 5.out", "w");
+      break;
+    }
+    case 6:
+    {
+      infile = fopen ("jobshop case 6.in", "r");
+      outfile = fopen ("jobshop case 6.out", "w");
+      break;
+    }
+    case 7:
+    {
+      infile = fopen ("jobshop case 7.in", "r");
+      outfile = fopen ("jobshop case 7.out", "w");
+      break;
+    }
+    default:
+    {
+      infile = fopen ("jobshop base-case.in", "r");
+      outfile = fopen ("jobshop base-case.out", "w");
+      break;
+    } 
+  }
+
 
   /* Read input parameters. */
 

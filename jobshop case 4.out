@@ -1,0 +1,64 @@
+Cafetaria model
+
+Number of work stations                    4
+
+Number of machines in each station         1    1 9999    2
+
+Number of job types                        3
+
+Number of tasks for each job type          3    3    2
+
+Distribution function of job types     0.800   0.950   1.000
+
+Mean interarrival time of jobs         30.00 seconds
+
+Length of the simulation                 1.5 hours 
+
+
+Job type     Work stations on route
+
+   1            1    3    4
+
+   2            2    3    4
+
+   3            3    4
+
+
+Job type     Service time (in seconds) for successive tasks
+
+   1        25.00-60.00     5.00-20.00    25.00-50.00
+
+   2        30.00-90.00     5.00-20.00    10.00-25.00
+
+   3         5.00-20.00     5.00-10.00
+
+
+
+Job type     Average total delay in queue    Maximum total delay in queue
+
+   1                   1441.899                     2797.970
+
+   2                     31.853                      145.175
+
+   3                      2.032                       18.152
+
+Overall average job total delay =  1158.398
+
+
+
+ Work      Average number      Maximum number      Average       Average delay       Maximum delay
+station       in queue            in queue       utilization        in queue           in queue
+
+   1           71.506              142.000            0.995         1430.125             2797.970
+
+   2            0.266                3.000            0.514           29.973              145.175
+
+   3            0.000                0.000            0.000            0.000                0.000
+
+   4            0.038                4.000            0.521            1.065               31.892
+
+
+
+ Time-average total number of customers in the entire system = 71.810
+
+ Maximum total number of customers in the entire system = 149.000
